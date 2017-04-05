@@ -5,6 +5,12 @@
  */
 package fi.areee.gui;
 
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.SpinnerNumberModel;
+
 /**
  *
  * @author ylhaart
@@ -16,6 +22,20 @@ public class PersonEditor extends javax.swing.JFrame {
      */
     public PersonEditor() {
         initComponents();
+
+        SpinnerNumberModel model = (SpinnerNumberModel) yearSpinner.getModel();
+        Calendar cal = Calendar.getInstance();
+        model.setMaximum(cal.get(Calendar.YEAR));
+
+        ClassLoader cl = getClass().getClassLoader();
+
+        InputStream stream = cl.getResourceAsStream("fi/areee/gui/res/people.txt");
+
+        people = Person.loadPersons(stream);
+
+        current = 0;
+        updateUI(people.get(current));
+
     }
 
     /**
@@ -50,20 +70,62 @@ public class PersonEditor extends javax.swing.JFrame {
         jLabel3.setText("Marital status:");
 
         firstNameField.setText("jTextField1");
+        firstNameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                firstNameFieldActionPerformed(evt);
+            }
+        });
 
         birthTownField.setText("jTextField2");
+        birthTownField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                birthTownFieldActionPerformed(evt);
+            }
+        });
 
         birthCountryField.setText("jTextField3");
+        birthCountryField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                birthCountryFieldActionPerformed(evt);
+            }
+        });
 
         maritalStatusLabel.setText("status");
 
+        yearSpinner.setModel(new javax.swing.SpinnerNumberModel(1950, 1900, 2010, 1));
+        yearSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                yearSpinnerStateChanged(evt);
+            }
+        });
+
         previousButton.setText("Previous");
+        previousButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousButtonActionPerformed(evt);
+            }
+        });
 
         nextButton.setText("Next");
+        nextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextButtonActionPerformed(evt);
+            }
+        });
 
         lastNameField.setText("jTextField4");
+        lastNameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lastNameFieldActionPerformed(evt);
+            }
+        });
 
         editButton.setText("Edit...");
+        editButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -81,25 +143,24 @@ public class PersonEditor extends javax.swing.JFrame {
                         .addGap(22, 22, 22)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(firstNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lastNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(firstNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(lastNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(maritalStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(birthTownField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(maritalStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(birthTownField, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(birthCountryField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(editButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addGap(24, 24, 24)
-                                .addComponent(yearSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(previousButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(nextButton)))
-                .addContainerGap())
+                                    .addComponent(editButton)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(birthCountryField, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(nextButton)
+                                            .addComponent(yearSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                    .addComponent(previousButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,6 +189,64 @@ public class PersonEditor extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        people.get(current).setBirthYear(Integer.parseInt(yearSpinner.getValue().toString()));
+        if (current < people.size() - 1) {
+            current++;
+        }
+        updateUI(people.get(current));
+    }//GEN-LAST:event_nextButtonActionPerformed
+
+    private void previousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousButtonActionPerformed
+        people.get(current).setBirthYear(Integer.parseInt(yearSpinner.getValue().toString()));
+        if (current > 0) {
+            current--;
+        }
+        updateUI(people.get(current));
+    }//GEN-LAST:event_previousButtonActionPerformed
+
+    private void firstNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firstNameFieldActionPerformed
+        if (!firstNameField.getText().equals("")) {
+            people.get(current).setFirstName(firstNameField.getText());
+        }
+    }//GEN-LAST:event_firstNameFieldActionPerformed
+
+    private void lastNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lastNameFieldActionPerformed
+        if (!lastNameField.getText().equals("")) {
+            people.get(current).setLastName(lastNameField.getText());
+        }
+    }//GEN-LAST:event_lastNameFieldActionPerformed
+
+    private void birthTownFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_birthTownFieldActionPerformed
+        if (!birthTownField.getText().equals("")) {
+            people.get(current).setBirthTown(birthTownField.getText());
+        }
+    }//GEN-LAST:event_birthTownFieldActionPerformed
+
+    private void birthCountryFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_birthCountryFieldActionPerformed
+        if (!birthCountryField.getText().equals("")) {
+            people.get(current).setBirthCountry(birthCountryField.getText());
+        }
+    }//GEN-LAST:event_birthCountryFieldActionPerformed
+
+    private void yearSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_yearSpinnerStateChanged
+
+    }//GEN-LAST:event_yearSpinnerStateChanged
+
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        String currentStatus = maritalStatusString(people.get(current).getMaritalStatus());
+        Object statusString = JOptionPane.showInputDialog(this, "Select marital status", "Marital status", JOptionPane.QUESTION_MESSAGE, null, maritalStatuses, currentStatus);
+
+        if (statusString != null) {
+            for (Person.MaritalStatus s : Person.MaritalStatus.values()) {
+                if (statusString.equals(maritalStatusString(s))) {
+                    people.get(current).setMaritalStatus(s);
+                }
+            }
+            updateUI(people.get(current));
+        }
+    }//GEN-LAST:event_editButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -178,4 +297,38 @@ public class PersonEditor extends javax.swing.JFrame {
     private javax.swing.JButton previousButton;
     private javax.swing.JSpinner yearSpinner;
     // End of variables declaration//GEN-END:variables
+    List<Person> people;
+    int current;
+
+    static String[] maritalStatuses = new String[]{
+        maritalStatusString(Person.MaritalStatus.SINGLE),
+        maritalStatusString(Person.MaritalStatus.COHABITING),
+        maritalStatusString(Person.MaritalStatus.MARRIED_REGISTERED),
+        maritalStatusString(Person.MaritalStatus.WIDOW),};
+
+    private void updateUI(Person p) {
+        firstNameField.setText(p.getFirstName());
+        lastNameField.setText(p.getLastName());
+        birthTownField.setText(p.getBirthTown());
+        birthCountryField.setText(p.getBirthCountry());
+        yearSpinner.setValue(p.getBirthYear());
+        maritalStatusLabel.setText(maritalStatusString(p.getMaritalStatus()));
+        nextButton.setEnabled(current < people.size() - 1);
+        previousButton.setEnabled(current > 0);
+    }
+
+    static String maritalStatusString(Person.MaritalStatus s) {
+        switch (s) {
+            case SINGLE:
+                return "Single";
+            case COHABITING:
+                return "Cohabiting";
+            case MARRIED_REGISTERED:
+                return "Married/in registered relationship";
+            case WIDOW:
+                return "Widow";
+            default:
+                throw new AssertionError(s.name());
+        }
+    }
 }
